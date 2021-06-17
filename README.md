@@ -14,6 +14,7 @@
 2. Make sure you are on YOUR branch
    - Use "git checkout [branch_name]" to change to the correct branch.
    - If you want to use a new branch do "git checkout -b [branch_name]" instead.
+      - After doing this, you will have to do "git push --set-upstream origin [branch_name]"
    - If you forgot the name of the branch do "git branch" and it will list all the branches.
 3. Do "git add . --dry-run" and check that all the files listed are the ones you made changes to, otherwise double check your files.
 4. If they are, do "git add ."

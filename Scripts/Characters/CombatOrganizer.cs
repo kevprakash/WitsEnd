@@ -39,21 +39,30 @@ public class CombatOrganizer : MonoBehaviour
             combatEnd();
             return;
         }
-        foreach (Party p in new Party[] { playerParty, enemyParty }) 
-        { 
-            bool hasDivine = false;
+
+        bool hasDivine = false;
+
+        foreach (Party p in new Party[] { playerParty, enemyParty })
+        {
             foreach (Character c in p.order)
             {
                 if (c == null) continue;
                 hasDivine = c.getStatusEffect("divine").Item2 > 0;
                 if (hasDivine) break;
             }
+            if (hasDivine) break;
+        }
 
-            foreach (Character c in p.order)
+        if (hasDivine)
+        {
+            foreach (Party p in new Party[] { playerParty, enemyParty })
             {
-                if (c is Explorer)
+                foreach (Character c in p.order)
                 {
-                    ((Explorer)c).modifySanity(-5);
+                    if (c is Explorer)
+                    {
+                        ((Explorer)c).modifySanity(-1);
+                    }
                 }
             }
         }

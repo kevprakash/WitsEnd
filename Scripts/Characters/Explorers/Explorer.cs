@@ -215,7 +215,7 @@ public abstract class Explorer : Character
 
     public void modifySanity(int amount)
     {
-        sanity = Mathf.Clamp(sanity + amount, -100, 100);
+        sanity = Mathf.Clamp(sanity + amount, 0, 100);
     }
 
     public async void train()
@@ -239,4 +239,11 @@ public abstract class Explorer : Character
         }
         Debug.Log("Finished training");
     }
+
+    public int getSanity()
+    {
+        return sanity;
+    }
 }
+
+

@@ -48,6 +48,8 @@ public abstract class Character : MonoBehaviour
 
     protected Dictionary<string, List<(int, int)>> statusEffects = new Dictionary<string, List<(int, int)>>();
 
+    protected bool isFocused = false;
+
 
     public void Start()
     {
@@ -102,9 +104,7 @@ public abstract class Character : MonoBehaviour
     {
         Debug.Log(this + " died");
         alive = false;
-        party.removeCharacter(this);
         onDeathUnique();
-        Destroy(gameObject);
     }
 
     public abstract void onDeathUnique();
@@ -431,5 +431,21 @@ public abstract class Character : MonoBehaviour
     public bool isAlive()
     {
         return alive;
+    }
+
+    public float getHealthPercentage()
+    {
+        return (health + 0.0f) / maxHealth;
+    }
+
+    public void setFocused(bool f)
+    {
+        isFocused = f;
+        if(!f && !isAlive())
+        {
+
+            party.removeCharacter(this);
+            Destroy(gameObject);
+        }
     }
 }

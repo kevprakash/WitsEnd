@@ -83,9 +83,9 @@ public abstract class Explorer : Character
         //throw new System.NotImplementedException();
     }
 
-    public override void onDeath()
+    public override void onDeathUnique()
     {
-        //throw new System.NotImplementedException();
+
     }
 
     public static int[] characteristicsNameToInt(string[] cnames)
@@ -212,6 +212,11 @@ public abstract class Explorer : Character
     }
 
     public abstract Character[][][] getValidTargets(Party enemies);
+
+    public void modifySanity(int amount)
+    {
+        sanity = Mathf.Clamp(sanity + amount, -100, 100);
+    }
 
     public async void train()
     {

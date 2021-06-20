@@ -15,10 +15,12 @@ public class Ranger : Explorer
     {
         Debug.Log("Camouflaging " + targets[0]);
         Character c = targets[0];
-        c.addStatusEffect("dodge", 5 + this.auxiliary, 3);
-        c.addStatusEffect("acc", 10 + this.auxiliary, 3);
-        c.addStatusEffect("invisible", 0, 1 + this.auxiliary / 8);
         this.party.focus(new int[] { party.getPositionOfCharacter(this), party.getPositionOfCharacter(c) });
+        bool crit = isCrit();
+        int buffDuration = crit ? 5 : 3;
+        c.addStatusEffect("dodge", 5 + this.auxiliary, buffDuration);
+        c.addStatusEffect("acc", 10 + this.auxiliary, buffDuration);
+        c.addStatusEffect("invisible", 0, 1 + this.auxiliary / 8);
     }
 
     //Tranq Shot
@@ -26,19 +28,20 @@ public class Ranger : Explorer
     {
         Debug.Log("Tranq Shot at " + targets[0]);
         Character c = targets[0];
-        if (c.isHit(100 + this.accuracy)) 
+        this.move(1);
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
+        if (c.isHit(100 + this.accuracy))
         {
-            c.takeDamage((int)(10 * (1 + (this.damage/100.0))));
+            bool crit = isCrit();
+            c.takeDamage((int)((crit ? 15 : 10) * (1 + (this.damage/100.0))));
             c.addStatusEffect("stun", 1, 1 + this.auxiliary / 4);
-            c.getMarked(3);
+            c.getMarked(crit ? 5 : 3);
         }
         else
         {
             Debug.Log("Missed");
         }
-        this.move(1);
-        this.party.focus(new int[] { party.getPositionOfCharacter(this)});
-        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
     }
 
     //Healing spell
@@ -46,9 +49,10 @@ public class Ranger : Explorer
     {
         Debug.Log("Using healing spell on " + targets[0]);
         Character c = targets[0];
-        c.getHealed((int)(20 * (1 + (this.heal/100.0))));
-        c.addStatusEffect("acc", 10 + this.auxiliary, 3);
         this.party.focus(new int[] { party.getPositionOfCharacter(this), party.getPositionOfCharacter(c) });
+        bool crit = isCrit();
+        c.getHealed((int)((crit ? 30 : 20) * (1 + (this.heal/100.0))));
+        c.addStatusEffect("acc", 10 + this.auxiliary, crit ? 5 : 3);
     }
 
     //Hawk Eye
@@ -56,17 +60,18 @@ public class Ranger : Explorer
     {
         Debug.Log("Hawk targets " + targets[0]);
         Character c = targets[0];
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
         if (c.isHit(100 + this.accuracy))
         {
-            c.takeDamage((int)(25 * (1 + (this.damage / 100.0))));
-            c.getMarked(3);
+            bool crit = isCrit();
+            c.takeDamage((int)((crit ? 38 : 25) * (1 + (this.damage / 100.0))));
+            c.getMarked(crit ? 5 : 3);
         }
         else
         {
             Debug.Log("Missed");
         }
-        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
-        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
     }
 
     //Sic' em
@@ -74,22 +79,23 @@ public class Ranger : Explorer
     {
         Debug.Log("Sic'ing wolf on " + targets[0]);
         Character c = targets[0];
+        this.move(-1);
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
         if (c.isHit(100 + this.accuracy))
         {
-            c.takeDamage((int)(10 * (1 + (this.damage / 100.0))));
-            c.addStatusEffect("bleed", 1 + this.auxiliary/4, 3);
-            c.getMarked(3);
+            bool crit = isCrit();
+            c.takeDamage((int)((crit ? 15 : 10) * (1 + (this.damage / 100.0))));
+            c.addStatusEffect("bleed", 1 + this.auxiliary/4, crit ? 5 : 3);
+            c.getMarked(crit ? 5 : 3);
         }
         else
         {
             Debug.Log("Missed");
         }
-        this.move(-1);
-        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
-        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
     }
 
-    public override int[] calculateInitStats()
+    public override int[] calculateStats()
     {
         int[][] stats = new int[][]
         {

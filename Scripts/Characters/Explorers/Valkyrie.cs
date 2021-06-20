@@ -10,32 +10,110 @@ public class Valkyrie : Explorer
         return new int[] { 3, 1, 2, 2, 1 };
     }
 
+    //Righteous Swing
     public override void ability1(Character[] targets)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Righteous swing at " + targets[0]);
+        Character c = targets[0];
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
+        if (c.isHit(100 + this.accuracy))
+        {
+            bool crit = isCrit();
+            c.takeDamage((int)(crit ? 60 : 40) * (1 + (this.damage / 100)));
+        }
+        else
+        {
+            Debug.Log("Missed");
+        }
     }
 
+    //Become Divine/Return to mortality
     public override void ability2(Character[] targets)
     {
-        throw new System.NotImplementedException();
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        if (!isDivine())
+        {
+            Debug.Log("Becoming Divine");
+            addStatusEffect("dmg", 50 + this.auxiliary, 10000);
+            addStatusEffect("dodge", 20 + this.auxiliary/4, 10000);
+            addStatusEffect("crit", 10 + this.auxiliary/4, 10000);
+            addStatusEffect("speed", 10 + this.auxiliary/4, 10000);
+            addStatusEffect("prot", 10 + this.auxiliary, 10000);
+            addStatusEffect("divine", 1, 10000);
+        }
+        else
+        {
+            Debug.Log("Return to Mortality");
+            removeStatusEffect("dmg");
+            removeStatusEffect("dodge");
+            removeStatusEffect("crit");
+            removeStatusEffect("speed");
+            removeStatusEffect("prot");
+            removeStatusEffect("divine");
+            //Debug.Log(getStatusEffect("divine") + " " + isDivine());
+            addStatusEffect("dmg", -40 + this.auxiliary, 10000);
+        }
     }
 
+    //Lead the Charge
     public override void ability3(Character[] targets)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Leading the charge at " + targets[0]);
+        Character c = targets[0];
+        move(-1);
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
+        if (c.isHit(100 + this.accuracy))
+        {
+            bool crit = isCrit();
+            c.takeDamage((int)(crit ? 30 : 20) * (1 + (this.damage / 100)));
+            if (isDivine())
+            {
+                c.addStatusEffect("stun", 1, crit ? 2 : 1);
+            }
+        }
+        else
+        {
+            Debug.Log("Missed");
+        }
     }
 
+    //Smite
     public override void ability4(Character[] targets)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Smiting " + targets[0]);
+        Character c = targets[0];
+        move(1);
+        this.party.focus(new int[] { party.getPositionOfCharacter(this) });
+        c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
+        if (c.isHit(100 + this.accuracy))
+        {
+            bool crit = isCrit();
+            c.takeDamage((int)(crit ? 38 : 25) * (1 + (this.damage / 100)), ignoreProt: isDivine());
+        }
+        else
+        {
+            Debug.Log("Missed");
+        }
     }
 
+    //Pray
     public override void ability5(Character[] targets)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Praying");
+        this.party.focus(new int[] { 0, 1, 2, 3 });
+        foreach (Character c in targets)
+        {
+            if (c != null)
+            {
+                Explorer e = (Explorer)c;
+                e.modifySanity(5 + this.auxiliary);
+            }
+        }
     }
 
-    public override int[] calculateInitStats()
+    public override int[] calculateStats()
     {
         int[][] stats = new int[][]
         {
@@ -66,23 +144,28 @@ public class Valkyrie : Explorer
     {
         return new bool[]
         {
-            party.getPositionOfCharacter(this) >= 2,
-            party.getPositionOfCharacter(this) >= 2,
+            party.getPositionOfCharacter(this) < 2,
             true,
             party.getPositionOfCharacter(this) >= 1,
-            party.getPositionOfCharacter(this) < 3,
+            party.getPositionOfCharacter(this) < 1,
+            true
         };
+    }
+
+    public bool isDivine()
+    {
+        return getStatusEffect("divine").Item2 > 0;
     }
 
     public override Character[][][] getValidTargets(Party enemies)
     {
         Character[][][] targets = new Character[][][]
         {
-            new Character[][]{new Character[] {party.order[0]}, new Character[] { party.order[1] } , new Character[] { party.order[2] } , new Character[] { party.order[3] } },
-            new Character[][]{ new Character[] {enemies.order[2]}, new Character[] { party.order[3]} },
-            new Character[][]{new Character[] {party.order[0]}, new Character[] { party.order[1] } , new Character[] { party.order[2] } , new Character[] { party.order[3] } },
-            new Character[][]{ new Character[] {enemies.order[2]}, new Character[] { party.order[3]} },
-            new Character[][]{ new Character[] {enemies.order[0]}, new Character[] { party.order[1]} },
+            new Character[][]{new Character[] {enemies.order[0]}, new Character[] { enemies.order[1] } , new Character[] { enemies.order[2] } },
+            new Character[][]{ new Character[] {this} },
+            new Character[][]{new Character[] { enemies.order[0]}, new Character[] { enemies.order[1] } },
+            new Character[][]{new Character[] { enemies.order[0]}, new Character[] { enemies.order[1] } },
+            new Character[][]{ party.order},
         };
         return targets;
     }

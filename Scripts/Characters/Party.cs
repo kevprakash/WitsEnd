@@ -7,7 +7,6 @@ public class Party : MonoBehaviour
 {
     public Character[] order = new Character[4];
     public Character[] defaultOrder = null;
-    public bool rightToLeft = true;
     public Vector3[] targetLocations = new Vector3[]
     {
         new Vector3(-2, 0, 0),
@@ -218,13 +217,18 @@ public class Party : MonoBehaviour
     {
         List<int> data = new List<int>();
         int dataLength = -1;
+        if (allDead())
+        {
+            data.AddRange(new int[400]);    //Default value
+            return data;
+        }
         for(int i = 0; i < order.Length; i++)
         {
             if(order[i] != null)
             {
                 List<int> charData = order[i].getData();
                 data.AddRange(charData);
-                if(i == 0)
+                if(dataLength < 0)
                 {
                     dataLength = charData.Count;
                 }
@@ -235,5 +239,28 @@ public class Party : MonoBehaviour
             }
         }
         return data;
+    }
+
+    public void endTurn()
+    {
+        bool hasDivine = false;
+        foreach(Character c in order)
+        {
+            hasDivine = c.getStatusEffect("divine").Item2 > 0;
+            if (hasDivine) break;
+        }
+
+        foreach(Character c in order)
+        {
+            if(c is Explorer)
+            {
+                ((Explorer)c).modifySanity(-5);
+            }
+        }
+    }
+
+    public bool allDead()
+    {
+        return getCharacterCount() <= 0;
     }
 }

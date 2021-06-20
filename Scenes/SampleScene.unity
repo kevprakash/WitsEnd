@@ -153,8 +153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52fc0ec3d016841b57076d036d6e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &205567592
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -257,18 +258,18 @@ MonoBehaviour:
   defaultOrder: []
   rightToLeft: 1
   targetLocations:
-  - {x: -2, y: 0, z: 0}
-  - {x: -4, y: 0, z: 0}
-  - {x: -6, y: 0, z: 0}
-  - {x: -8, y: 0, z: 0}
+  - {x: -1.5, y: 0, z: 0}
+  - {x: -3.25, y: 0, z: 0}
+  - {x: -5, y: 0, z: 0}
+  - {x: -6.75, y: 0, z: 0}
   movementSpeed: 10
   focusLocations:
-  - {x: -1, y: -1, z: -1}
-  - {x: -4, y: -1, z: -1}
-  - {x: -7, y: -1, z: -1}
-  - {x: -10, y: -1, z: -1}
+  - {x: -1.5, y: -1, z: -1}
+  - {x: -3.5, y: -1, z: -1}
+  - {x: -5.5, y: -1, z: -1}
+  - {x: -7.5, y: -1, z: -1}
   defaultScale: {x: 1, y: 1, z: 1}
-  focusScale: {x: 2, y: 2, z: 2}
+  focusScale: {x: 1.5, y: 1.5, z: 1.5}
   zoomSpeed: 10
   inFocus: 00000000
   enemies: {fileID: 2042298107}
@@ -407,8 +408,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ba385df476a7745ba0c826ef8e6997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &923069674
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -504,8 +506,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52fc0ec3d016841b57076d036d6e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &961056613
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -571,6 +574,54 @@ Transform:
   m_Father: {fileID: 2042298108}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1289047022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1289047024}
+  - component: {fileID: 1289047023}
+  m_Layer: 0
+  m_Name: CombatOrganizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1289047023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289047022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 886d39371e1207e4a937a8c118a3ccfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerParty: {fileID: 277036308}
+  enemyParty: {fileID: 2042298107}
+  turnOrder: []
+  turnIndex: 0
+  turn: 0
+--- !u!4 &1289047024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289047022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3095319, y: -0.2524033, z: -2.4643965}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1323150372
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,8 +652,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52fc0ec3d016841b57076d036d6e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &1323150374
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -698,8 +750,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e52fc0ec3d016841b57076d036d6e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &1829845475
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -795,8 +848,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ba385df476a7745ba0c826ef8e6997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &1856290544
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -892,8 +946,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ba385df476a7745ba0c826ef8e6997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &1919855714
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -996,18 +1051,18 @@ MonoBehaviour:
   defaultOrder: []
   rightToLeft: 1
   targetLocations:
-  - {x: 2, y: 0, z: 0}
-  - {x: 4, y: 0, z: 0}
-  - {x: 6, y: 0, z: 0}
-  - {x: 8, y: 0, z: 0}
+  - {x: 1.5, y: 0, z: 0}
+  - {x: 3.25, y: 0, z: 0}
+  - {x: 5, y: 0, z: 0}
+  - {x: 6.75, y: 0, z: 0}
   movementSpeed: 10
   focusLocations:
-  - {x: 1, y: -1, z: -1}
-  - {x: 4, y: -1, z: -1}
-  - {x: 7, y: -1, z: -1}
-  - {x: 10, y: -1, z: -1}
+  - {x: 1.5, y: -1, z: -1}
+  - {x: 3.5, y: -1, z: -1}
+  - {x: 5.5, y: -1, z: -1}
+  - {x: 7.5, y: -1, z: -1}
   defaultScale: {x: 1, y: 1, z: 1}
-  focusScale: {x: 2, y: 2, z: 2}
+  focusScale: {x: 1.5, y: 1.5, z: 1.5}
   zoomSpeed: 10
   inFocus: 00000000
   enemies: {fileID: 277036308}
@@ -1063,8 +1118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ba385df476a7745ba0c826ef8e6997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: 0
+  health: 0
   abilityTest: 0
+  trainTest: 0
 --- !u!212 &2092716719
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ public abstract class Character : MonoBehaviour
         characteristics = initCharacteristics();
     }
 
-    public abstract int[] calculateInitStats();
+    public abstract int[] calculateStats();
 
     public abstract int[] initCharacteristics();
 
@@ -71,7 +71,7 @@ public abstract class Character : MonoBehaviour
         {
             modAmount = amount;
         }
-        Debug.Log("Incoming damag: " + modAmount);
+        Debug.Log("Incoming damage: " + modAmount);
         health = Mathf.Clamp(health - modAmount, 0, maxHealth);
         if(health <= 0)
         {
@@ -92,11 +92,22 @@ public abstract class Character : MonoBehaviour
     public void getHealed(int amount)
     {
         health = Mathf.Clamp(health + amount, 0, maxHealth);
+        Debug.Log("Incoming healing: " + amount);
+        Debug.Log("New Health: " + this.health);
     }
 
     public abstract void atDeathsDoor();
 
-    public abstract void onDeath();
+    public void onDeath()
+    {
+        Debug.Log(this + " died");
+        alive = false;
+        party.removeCharacter(this);
+        onDeathUnique();
+        Destroy(gameObject);
+    }
+
+    public abstract void onDeathUnique();
 
     public void tickStatusEffect(string effectName, bool recalculate = true)
     {
@@ -238,7 +249,7 @@ public abstract class Character : MonoBehaviour
     //This is technically a mutator, but since the character is getting marked, it's called getMarked instead of setMarked
     public void getMarked(int duration)
     {
-        marked = duration;
+        marked = Mathf.Max(marked, duration);
     }
 
     public void addStatusEffect(string name, int amount, int duration)
@@ -296,7 +307,7 @@ public abstract class Character : MonoBehaviour
     public void setLevel(int level)
     {
         this.level = level;
-        int[] initStats = calculateInitStats();
+        int[] initStats = calculateStats();
 
         health = initStats[0];
         maxHealth = initStats[0];
@@ -405,5 +416,20 @@ public abstract class Character : MonoBehaviour
             if (!isNull) break;
         }
         return isNull;
+    }
+
+    public bool isCrit()
+    {
+        return UnityEngine.Random.Range(0, 100) < critChance;
+    }
+
+    public int getSpeed()
+    {
+        return speed;
+    }
+
+    public bool isAlive()
+    {
+        return alive;
     }
 }

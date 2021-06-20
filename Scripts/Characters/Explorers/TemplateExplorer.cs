@@ -35,7 +35,7 @@ public class TemplateExplorer : Explorer
         throw new System.NotImplementedException();
     }
 
-    public override int[] calculateInitStats()
+    public override int[] calculateStats()
     {
         int[][] stats = new int[][]
         {

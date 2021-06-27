@@ -129,13 +129,19 @@ public class Party : MonoBehaviour
         {
             //Debug.Log(i);
             inFocus[i] = true;
-            order[i].setFocused(true);
+            if (order[i] != null)
+            {
+                order[i].setFocused(true);
+            }
         }
         await Task.Delay((int)(duration * 1000));
         inFocus = new bool[4];
         foreach(Character c in order)
         {
-            c.setFocused(false);
+            if (c != null)
+            {
+                c.setFocused(false);
+            }
         }
     }
 

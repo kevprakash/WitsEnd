@@ -167,7 +167,7 @@ public abstract class Explorer : Character
         int[] data = temp.ToArray();
         bool[][] evals = getEvaluations(data);
 
-        Character[][][] targets = getValidTargets(enemies);
+        Character[][][] targets = removeInvalidTargets(getValidTargets(enemies));
 
         List<((int, int), Character[])> candidates = new List<((int, int), Character[])>();
         List<((int, int), Character[])> fails = new List<((int, int), Character[])>();
@@ -176,13 +176,16 @@ public abstract class Explorer : Character
         {
             for (int j = 0; j < evals[i].Length; j++)
             {
-                if (evals[i][j])
+                if (targets[i][j] != null)
                 {
-                    candidates.Add(((i, j), targets[i][j]));
-                }
-                else
-                {
-                    fails.Add(((i, j), targets[i][j]));
+                    if (evals[i][j])
+                    {
+                        candidates.Add(((i, j), targets[i][j]));
+                    }
+                    else
+                    {
+                        fails.Add(((i, j), targets[i][j]));
+                    }
                 }
             }
         }
@@ -243,6 +246,35 @@ public abstract class Explorer : Character
     public int getSanity()
     {
         return sanity;
+    }
+
+    public Character[][][] removeInvalidTargets(Character[][][] targets)
+    {
+        for(int i = 0; i < targets.Length; i++)
+        {
+            Character[][] abilityTargets = targets[i];
+            for(int j = 0; j < abilityTargets.Length; j++)
+            {
+                List<Character> validTargets = new List<Character>();
+                Character[] t = abilityTargets[j];
+                foreach(Character c in t)
+                {
+                    if(c != null && c.getStatusEffect("invisible").Item2 <= 0)
+                    {
+                        validTargets.Add(c);
+                    }
+                }
+                if(validTargets.Count > 0)
+                {
+                    targets[i][j] = validTargets.ToArray();
+                }
+                else
+                {
+                    targets[i][j] = null;
+                }
+            }
+        }
+        return targets;
     }
 }
 

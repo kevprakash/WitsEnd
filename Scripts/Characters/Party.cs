@@ -34,6 +34,8 @@ public class Party : MonoBehaviour
     public bool dualTest = false;
     public bool defaultTest = false;
 
+    public bool ownedByPlayer = false;
+
     // Start is called before the first frame update
     void Start()
     {

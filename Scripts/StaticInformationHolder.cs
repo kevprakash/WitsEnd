@@ -34,6 +34,8 @@ public class StaticInformationHolder : MonoBehaviour
         GameObject partyObj = Instantiate(Resources.Load<GameObject>("Empty"));
         Party partyComp = partyObj.AddComponent(typeof(Party)) as Party;
         partyObj.name = "Player party";
+        partyObj.transform.SetParent(GameObject.Find("Main Camera").transform);
+        partyComp.ownedByPlayer = true;
 
         initializePartyInfo(partyComp);
     }

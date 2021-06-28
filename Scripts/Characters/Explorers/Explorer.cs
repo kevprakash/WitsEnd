@@ -14,7 +14,6 @@ public abstract class Explorer : Character
     public DecisionTree[][] decisionTrees;
     public List<(List<int>, int)>[][] memory;
 
-    public bool abilityTest = false;
     public bool trainTest = false;
 
     static Explorer()
@@ -29,11 +28,6 @@ public abstract class Explorer : Character
 
     public void Update()
     {
-        if (abilityTest)
-        {
-            abilityTest = false;
-            useAbility(party.enemies);
-        }
         if (trainTest)
         {
             trainTest = false;

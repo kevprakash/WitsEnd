@@ -9,21 +9,21 @@ public class Party : MonoBehaviour
     public Character[] defaultOrder = null;
     public Vector3[] targetLocations = new Vector3[]
     {
-        new Vector3(-2, 0, 0),
-        new Vector3(-4, 0, 0),
-        new Vector3(-6, 0, 0),
-        new Vector3(-8, 0, 0)
+        new Vector3(-1.5f, -1, 0),
+        new Vector3(-3.25f, -1, 0),
+        new Vector3(-5, -1, 0),
+        new Vector3(-6.75f, -1, 0)
     };
     public float movementSpeed = 10f;
     public Vector3[] focusLocations = new Vector3[]
     {
-        new Vector3(-1, -1, -1),
-        new Vector3(-4, -1, -1),
-        new Vector3(-7, -1, -1),
-        new Vector3(-10, -1, -1)
+        new Vector3(-1.5f, -2, -1),
+        new Vector3(-3.5f, -2, -1),
+        new Vector3(-5.5f, -2, -1),
+        new Vector3(-7.5f, -2, -1)
     };
     public Vector3 defaultScale = new Vector3(1, 1, 1);
-    public Vector3 focusScale = new Vector3(2, 2, 2);
+    public Vector3 focusScale = new Vector3(1.5f, 1.5f, 1.5f);
     public float zoomSpeed = 10f;
     public bool[] inFocus = new bool[4];
 
@@ -37,9 +37,11 @@ public class Party : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach(Character c in order)
+        foreach (Character c in order)
         {
-            c.setParty(this);
+            if (c != null) { 
+                c.setParty(this);
+            }
         }
     }
 
@@ -64,7 +66,7 @@ public class Party : MonoBehaviour
 
             if(Vector3.Distance(t.position, target) > 0.001f)
             {
-                Vector3 difference =  target - t.position;
+                Vector3 difference =  target + transform.position - t.position;
                 t.position += difference * Time.deltaTime * (inFocus[i] ? zoomSpeed : movementSpeed);
             }
 

@@ -16,6 +16,10 @@ public abstract class Explorer : Character
 
     public bool trainTest = false;
 
+    public Texture2D[] abilitySprites;
+    public Texture2D idleSprite;
+    public Texture2D targetSprite;
+
     static Explorer()
     {
         nameToInt = new Dictionary<string, int>();
@@ -132,6 +136,8 @@ public abstract class Explorer : Character
                 Debug.Log("Attempted to use Ability " + index);
                 throw new System.NotImplementedException();
         }
+
+        targetSprite = abilitySprites[index];
     }
 
     public abstract bool[] canUseAbilities();

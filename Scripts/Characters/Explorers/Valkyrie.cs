@@ -41,6 +41,13 @@ public class Valkyrie : Explorer
             addStatusEffect("speed", 10 + this.auxiliary/4, 10000);
             addStatusEffect("prot", 10 + this.auxiliary, 10000);
             addStatusEffect("divine", 1, 10000);
+
+            //abilitySprites[0] = (Texture2D) Resources.Load("");
+            abilitySprites[1] = (Texture2D)Resources.Load("ReturnToMortality");
+            //abilitySprites[2] = (Texture2D) Resources.Load("");
+            //abilitySprites[3] = (Texture2D) Resources.Load("");
+            //abilitySprites[4] = (Texture2D) Resources.Load("");
+            idleSprite = (Texture2D)Resources.Load("ValkDivineIdle");
         }
         else
         {
@@ -52,7 +59,14 @@ public class Valkyrie : Explorer
             removeStatusEffect("prot");
             removeStatusEffect("divine");
             //Debug.Log(getStatusEffect("divine") + " " + isDivine());
-            addStatusEffect("dmg", -40 + this.auxiliary, 10000);
+            addStatusEffect("dmg", -40 - this.auxiliary, 5);
+
+            //abilitySprites[0] = (Texture2D) Resources.Load("");
+            abilitySprites[1] = (Texture2D)Resources.Load("BecomeDivine");
+            //abilitySprites[2] = (Texture2D) Resources.Load("");
+            //abilitySprites[3] = (Texture2D) Resources.Load("");
+            //abilitySprites[4] = (Texture2D) Resources.Load("");
+            idleSprite = (Texture2D)Resources.Load("ValkIdle");
         }
     }
 

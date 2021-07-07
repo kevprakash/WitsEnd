@@ -5,6 +5,8 @@ using UnityEngine;
 public class LoadTester : MonoBehaviour
 {
     public bool loadTest;
+    public bool combatTest;
+    public CombatOrganizer combatOrganizer;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +21,13 @@ public class LoadTester : MonoBehaviour
         {
             loadTest = false;
             StaticInformationHolder.createPartyGameObject();
+        }
+        if (combatTest)
+        {
+            combatTest = false;
+            Party enemyParty = GameObject.Find("Test Enemies").GetComponent<Party>();
+            combatOrganizer.enemyParty = enemyParty;
+            combatOrganizer.turn = true;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
+using System.Threading.Tasks;
 
 public abstract class Explorer : Character
 {
@@ -16,9 +17,7 @@ public abstract class Explorer : Character
 
     public bool trainTest = false;
 
-    public Texture2D[] abilitySprites;
-    public Texture2D idleSprite;
-    public Texture2D targetSprite;
+    public ((int, int), List<int>) lastMemory;
 
     static Explorer()
     {
@@ -137,7 +136,7 @@ public abstract class Explorer : Character
                 throw new System.NotImplementedException();
         }
 
-        targetSprite = abilitySprites[index];
+        targetSprite = abilitySprites[index-1];
     }
 
     public abstract bool[] canUseAbilities();
@@ -211,7 +210,8 @@ public abstract class Explorer : Character
         ((int, int), Character[]) info = hasCandidates ? candidates[index] : fails[index];
         //Debug.Log(info);
         useAbilityFromIndex(info.Item1.Item1, info.Item2);
-        memory[info.Item1.Item1][info.Item1.Item2].Add((temp, Random.Range(0, 2)));
+        //memory[info.Item1.Item1][info.Item1.Item2].Add((temp, Random.Range(0, 2)));
+        lastMemory = (info.Item1, temp);
     }
 
     public abstract Character[][][] getValidTargets(Party enemies);
@@ -221,7 +221,7 @@ public abstract class Explorer : Character
         sanity = Mathf.Clamp(sanity + amount, 0, 100);
     }
 
-    public async void train()
+    public async Task train()
     {
         Debug.Log("Began training");
         for(int i = 0; i < decisionTrees.Length; i++)

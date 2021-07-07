@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class Party : MonoBehaviour
 {
@@ -9,18 +10,18 @@ public class Party : MonoBehaviour
     public Character[] defaultOrder = null;
     public Vector3[] targetLocations = new Vector3[]
     {
-        new Vector3(-1.5f, -1, 0),
-        new Vector3(-3.25f, -1, 0),
-        new Vector3(-5, -1, 0),
-        new Vector3(-6.75f, -1, 0)
+        new Vector3(-1.5f, -2, 0),
+        new Vector3(-3.35f, -2, 0),
+        new Vector3(-5.2f, -2, 0),
+        new Vector3(-7.05f, -2, 0)
     };
     public float movementSpeed = 10f;
     public Vector3[] focusLocations = new Vector3[]
     {
-        new Vector3(-1.5f, -2, -1),
-        new Vector3(-3.5f, -2, -1),
-        new Vector3(-5.5f, -2, -1),
-        new Vector3(-7.5f, -2, -1)
+        new Vector3(-1.5f, -3, -1),
+        new Vector3(-3.6f, -3, -1),
+        new Vector3(-5.7f, -3, -1),
+        new Vector3(-8.05f, -3, -1)
     };
     public Vector3 defaultScale = new Vector3(1, 1, 1);
     public Vector3 focusScale = new Vector3(1.5f, 1.5f, 1.5f);
@@ -35,6 +36,7 @@ public class Party : MonoBehaviour
     public bool defaultTest = false;
 
     public bool ownedByPlayer = false;
+    public bool flipSprites = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +45,18 @@ public class Party : MonoBehaviour
         {
             if (c != null) { 
                 c.setParty(this);
+                c.gameObject.GetComponent<SpriteRenderer>().flipX = flipSprites;
+            }
+        }
+    }
+
+    public void setFlip()
+    {
+        foreach (Character c in order)
+        {
+            if (c != null)
+            {
+                c.gameObject.GetComponent<SpriteRenderer>().flipX = flipSprites;
             }
         }
     }
@@ -78,6 +92,14 @@ public class Party : MonoBehaviour
             {
                 Vector3 difference = targetScale - t.localScale;
                 t.localScale += difference * Time.deltaTime * zoomSpeed;
+            }
+
+            if(order[i].GetComponent<SpriteRenderer>().sprite.texture != order[i].targetSprite && order[i].targetSprite != null)
+            {
+                Texture2D tex = order[i].targetSprite;
+                Sprite s = order[i].GetComponent<SpriteRenderer>().sprite;
+                Rect r = new Rect(0, 0, tex.width, tex.height);
+                order[i].GetComponent<SpriteRenderer>().sprite = Sprite.Create(tex, r, new Vector2(0.5f, 0f), 750);
             }
         }
 
@@ -116,6 +138,11 @@ public class Party : MonoBehaviour
         
     }
 
+    public bool hasCharacter(Character c)
+    {
+        return order.Contains(c);
+    }
+
     public void move(int from, int to)
     {
         Character c = order[from];
@@ -127,7 +154,7 @@ public class Party : MonoBehaviour
         order[to] = c;
     }
 
-    public async void focus(int[] positions, float duration=1f)
+    public async void focus(int[] positions, float duration=1.5f)
     {
         foreach(int i in positions)
         {
@@ -145,6 +172,7 @@ public class Party : MonoBehaviour
             if (c != null)
             {
                 c.setFocused(false);
+                c.targetSprite = c.idleSprite;
             }
         }
     }

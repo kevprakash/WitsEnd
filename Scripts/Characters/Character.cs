@@ -50,6 +50,10 @@ public abstract class Character : MonoBehaviour
 
     protected bool isFocused = false;
 
+    public Texture2D[] abilitySprites;
+    public Texture2D idleSprite;
+    public Texture2D targetSprite;
+
 
     public void Start()
     {
@@ -105,6 +109,12 @@ public abstract class Character : MonoBehaviour
         Debug.Log(this + " died");
         alive = false;
         onDeathUnique();
+        if (!isFocused)
+        {
+
+            party.removeCharacter(this);
+            Destroy(gameObject);
+        }
     }
 
     public abstract void onDeathUnique();

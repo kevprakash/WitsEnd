@@ -18,6 +18,7 @@ public class LevelBackgroundLoader : MonoBehaviour
     public float[] backgroundItemScaling;
     public bool created = false;
     public bool loading = false;
+    public Animator loadingAnimator;
 
     public bool test;
 
@@ -50,6 +51,7 @@ public class LevelBackgroundLoader : MonoBehaviour
         MC.backgroundRefs = controlRefs;
         loading = false;
         created = true;
+        loadingAnimator.SetTrigger("Close Loading");
     }
 
     public async Task createLayer(Texture2D texture, int length, int slot, GameObject controller, bool populate)

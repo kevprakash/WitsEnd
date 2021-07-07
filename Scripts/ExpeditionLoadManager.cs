@@ -14,7 +14,7 @@ public class ExpeditionLoadManager : MonoBehaviour
     async void Start()
     {
         moveControl.canMove = false;
-        await backgroundLoader.createBackground(5);
+        await backgroundLoader.createBackground(20);
     }
 
     // Update is called once per frame

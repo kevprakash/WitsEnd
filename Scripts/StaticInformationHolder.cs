@@ -18,8 +18,15 @@ public class StaticInformationHolder : MonoBehaviour
     {
         roster["Tracy"] = (ExplorerClass.Ranger, 0);
         roster["Anastacia"] = (ExplorerClass.Valkyrie, 0);
+
+        roster["Elizabeth"] = (ExplorerClass.Valkyrie, 0);
+        roster["Sarah"] = (ExplorerClass.Ranger, 0);
+
+
         addToParty("Anastacia", 0);
         addToParty("Tracy", 1);
+        addToParty("Elizabeth", 2);
+        addToParty("Sarah", 3);
     }
 
 

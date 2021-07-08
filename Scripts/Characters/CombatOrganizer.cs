@@ -92,7 +92,7 @@ public class CombatOrganizer : MonoBehaviour
 
     public async void startTurn()
     {
-        if(turnOrder[turnIndex] == null || turnOrder[turnIndex].getStatusEffect("stun").Item2 > 0)
+        if(turnOrder[turnIndex] == null)
         {
             turnIndex++;
             if (turnIndex >= turnOrder.Length)
@@ -100,6 +100,11 @@ public class CombatOrganizer : MonoBehaviour
                 nextRound();
             }
             startTurn();
+        }
+        else if(turnOrder[turnIndex].getStatusEffect("stun").Item2 > 0)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(1000));
+            endTurn();
         }
         else
         {

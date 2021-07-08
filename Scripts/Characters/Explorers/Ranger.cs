@@ -21,7 +21,7 @@ public class Ranger : Explorer
         int buffDuration = crit ? 5 : 3;
         c.addStatusEffect("dodge", 5 + this.auxiliary, buffDuration);
         c.addStatusEffect("acc", 10 + this.auxiliary, buffDuration);
-        c.addStatusEffect("invisible", 0, 1 + this.auxiliary / 8);
+        c.addStatusEffect("invisible", 0, 3 + this.auxiliary / 8);
     }
 
     //Tranq Shot

@@ -94,7 +94,7 @@ public class LevelBackgroundLoader : MonoBehaviour
             }
             else
             {
-                spriteFileName = "Tree" + UnityEngine.Random.Range(1, 19);
+                spriteFileName = "Tree" + UnityEngine.Random.Range(1, 13);
             }
 
             float x = UnityEngine.Random.Range(minX, maxX);

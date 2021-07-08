@@ -14,6 +14,7 @@ public class Ranger : Explorer
     public override void ability1(Character[] targets)
     {
         Debug.Log("Camouflaging " + targets[0]);
+        combatPrint("Camouflaging " + targets[0]);
         Character c = targets[0];
         this.party.focus(new int[] { party.getPositionOfCharacter(this), party.getPositionOfCharacter(c) });
         bool crit = isCrit();
@@ -27,6 +28,7 @@ public class Ranger : Explorer
     public override void ability2(Character[] targets)
     {
         Debug.Log("Tranq Shot at " + targets[0]);
+        combatPrint("Tranq Shot at " + targets[0]);
         Character c = targets[0];
         this.move(1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
@@ -48,6 +50,7 @@ public class Ranger : Explorer
     public override void ability3(Character[] targets)
     {
         Debug.Log("Using healing spell on " + targets[0]);
+        combatPrint("Using healing spell on " + targets[0]);
         Character c = targets[0];
         this.party.focus(new int[] { party.getPositionOfCharacter(this), party.getPositionOfCharacter(c) });
         bool crit = isCrit();
@@ -59,6 +62,7 @@ public class Ranger : Explorer
     public override void ability4(Character[] targets)
     {
         Debug.Log("Hawk targets " + targets[0]);
+        combatPrint("Hawk targets " + targets[0]);
         Character c = targets[0];
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
@@ -78,6 +82,7 @@ public class Ranger : Explorer
     public override void ability5(Character[] targets)
     {
         Debug.Log("Sic'ing wolf on " + targets[0]);
+        combatPrint("Sic'ing wolf on " + targets[0]);
         Character c = targets[0];
         this.move(-1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });

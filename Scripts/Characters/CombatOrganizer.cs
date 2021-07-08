@@ -13,6 +13,7 @@ public class CombatOrganizer : MonoBehaviour
     public int turnIndex = 0;
     public MovementControl moveControl;
     public Animator animator;
+    public string combatString = "";
 
     public bool turn = false;
 
@@ -91,7 +92,7 @@ public class CombatOrganizer : MonoBehaviour
 
     public async void startTurn()
     {
-        if(turnOrder[turnIndex] == null)
+        if(turnOrder[turnIndex] == null || turnOrder[turnIndex].getStatusEffect("stun").Item2 > 0)
         {
             turnIndex++;
             if (turnIndex >= turnOrder.Length)
@@ -224,6 +225,7 @@ public class CombatOrganizer : MonoBehaviour
             eComp.setLevel(levels[i]);
             eParty.addCharacter(eComp);
             enemyObj.transform.SetParent(eParty.gameObject.transform);
+            enemyObj.name = enemies[i] + " " + i;
         }
         eParty.gameObject.transform.SetParent(GameObject.Find("Main Camera").transform);
         eParty.transform.localPosition = new Vector3(0, 0, 2);
@@ -231,5 +233,10 @@ public class CombatOrganizer : MonoBehaviour
         moveControl.canMove = false;
         await Task.Delay(TimeSpan.FromMilliseconds(1000));
         turn = true;
+    }
+
+    public void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 10000, 20), combatString);
     }
 }

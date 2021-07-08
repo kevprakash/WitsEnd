@@ -458,4 +458,9 @@ public abstract class Character : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void combatPrint(string s)
+    {
+        GameObject.Find("Combat Organizer").GetComponent<CombatOrganizer>().combatString = s;
+    }
 }

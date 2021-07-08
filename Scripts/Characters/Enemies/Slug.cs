@@ -33,15 +33,23 @@ public class Slug : Enemy
 
     public override void useAbility(Party enemies)
     {
-        int targetIndex = Random.Range(0, enemies.getCharacterCount());
-        Character target = enemies.order[targetIndex];
-        if(Random.Range(0.0f, 1.0f) > 0.5f)
+        List<Character> possibleTargets = new List<Character>();
+        foreach (Character c in enemies.order)
         {
-            spit(target);
+            if (c != null && c.getStatusEffect("invisible").Item2 <= 0)
+                possibleTargets.Add(c);
         }
-        else
-        {
-            lunge(target);
+        if (possibleTargets.Count > 0) { 
+            int targetIndex = Random.Range(0, possibleTargets.Count);
+            Character target = possibleTargets[targetIndex];
+            if (Random.Range(0.0f, 1.0f) > 0.5f)
+            {
+                spit(target);
+            }
+            else
+            {
+                lunge(target);
+            }
         }
         
     }
@@ -49,6 +57,7 @@ public class Slug : Enemy
     public void spit(Character target)
     {
         Debug.Log("Spitting at " + target);
+        combatPrint("Spitting at " + target);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         target.getParty().focus(new int[] { target.getParty().getPositionOfCharacter(target) });
         if(target.isHit(60 + this.accuracy))
@@ -66,6 +75,7 @@ public class Slug : Enemy
     public void lunge(Character target)
     {
         Debug.Log("Lunging at " + target);
+        combatPrint("Lunging at " + target);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         target.getParty().focus(new int[] { target.getParty().getPositionOfCharacter(target) });
         if (target.isHit(80 + this.accuracy))

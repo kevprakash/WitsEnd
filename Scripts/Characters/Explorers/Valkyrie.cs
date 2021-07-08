@@ -14,6 +14,7 @@ public class Valkyrie : Explorer
     public override void ability1(Character[] targets)
     {
         Debug.Log("Righteous swing at " + targets[0]);
+        combatPrint("Righteous swing at " + targets[0]);
         Character c = targets[0];
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
@@ -35,6 +36,7 @@ public class Valkyrie : Explorer
         if (!isDivine())
         {
             Debug.Log("Becoming Divine");
+            combatPrint("Becoming Divine");
             addStatusEffect("dmg", 50 + this.auxiliary, 10000);
             addStatusEffect("dodge", 20 + this.auxiliary/4, 10000);
             addStatusEffect("crit", 10 + this.auxiliary/4, 10000);
@@ -52,6 +54,7 @@ public class Valkyrie : Explorer
         else
         {
             Debug.Log("Return to Mortality");
+            combatPrint("Return to Mortality");
             removeStatusEffect("dmg");
             removeStatusEffect("dodge");
             removeStatusEffect("crit");
@@ -74,6 +77,7 @@ public class Valkyrie : Explorer
     public override void ability3(Character[] targets)
     {
         Debug.Log("Leading the charge at " + targets[0]);
+        combatPrint("Leading the charge at " + targets[0]);
         Character c = targets[0];
         move(-1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
@@ -97,6 +101,7 @@ public class Valkyrie : Explorer
     public override void ability4(Character[] targets)
     {
         Debug.Log("Smiting " + targets[0]);
+        combatPrint("Smiting " + targets[0]);
         Character c = targets[0];
         move(1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
@@ -116,6 +121,7 @@ public class Valkyrie : Explorer
     public override void ability5(Character[] targets)
     {
         Debug.Log("Praying");
+        combatPrint("Praying");
         this.party.focus(new int[] { 0, 1, 2, 3 });
         foreach (Character c in targets)
         {

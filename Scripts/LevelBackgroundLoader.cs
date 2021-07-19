@@ -43,9 +43,11 @@ public class LevelBackgroundLoader : MonoBehaviour
         loading = true;
         MovementControl MC = GameObject.Find("Movement Control").GetComponent<MovementControl>();
         GameObject[] controlRefs = new GameObject[backgroundLayers.Length];
-        for(int i = 0; i < backgroundLayers.Length; i++)
+        controlRefs[0] = Instantiate(emptyReference, new Vector3(0, 0, (backgroundLayers.Length + 1) * 5), new Quaternion());
+        await createLayer(backgroundLayers[0], length, 0, controlRefs[0], false, (backgroundLayers.Length + 1) * 5);
+        for (int i = 1; i < backgroundLayers.Length; i++)
         {
-            controlRefs[i] = Instantiate(emptyReference, new Vector3(0, 0, (i + 1) * 5), new Quaternion());
+            controlRefs[i] = Instantiate(emptyReference, new Vector3(0, 0, i * 5), new Quaternion());
             await createLayer(backgroundLayers[i], length, i, controlRefs[i], i != backgroundLayers.Length - 1);
         }
         MC.backgroundRefs = controlRefs;
@@ -54,17 +56,18 @@ public class LevelBackgroundLoader : MonoBehaviour
         loadingAnimator.SetTrigger("Close Loading");
     }
 
-    public async Task createLayer(Texture2D texture, int length, int slot, GameObject controller, bool populate)
+    public async Task createLayer(Texture2D texture, int length, int slot, GameObject controller, bool populate, float zOverride=-1)
     {
         GameObject[] SOs = new GameObject[length];
         for (int i = 0; i < length; i++) 
         {
-            GameObject spriteObj = Instantiate(spriteRenderer, new Vector3(backgroundLoopOffset[slot] * i * scaling + initOffset[slot], layerYOffset[slot] * scaling, (slot + 1) * 5), new Quaternion());
+            GameObject spriteObj = Instantiate(spriteRenderer, new Vector3(backgroundLoopOffset[slot] * i * scaling + initOffset[slot], layerYOffset[slot] * scaling, zOverride > 0 ? slot * 5 : zOverride), new Quaternion());
             SpriteRenderer sprite = spriteObj.GetComponent<SpriteRenderer>();
             Texture2D tex = backgroundLayers[slot];
             Rect r = new Rect(0, 0, tex.width, tex.height);
             sprite.sprite = Sprite.Create(tex, r, new Vector2(0, 0));
             spriteObj.transform.SetParent(controller.transform);
+            spriteObj.transform.localPosition = new Vector3(spriteObj.transform.localPosition.x, spriteObj.transform.localPosition.y, 0);
 
             float minX = backgroundLoopOffset[slot] * i * scaling + initOffset[slot];
             float maxX = backgroundLoopOffset[slot] * i * scaling +  initOffset[slot] + backgroundLoopOffset[slot];

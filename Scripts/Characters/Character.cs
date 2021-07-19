@@ -77,7 +77,7 @@ public abstract class Character : MonoBehaviour
         {
             modAmount = amount;
         }
-        Debug.Log("Incoming damage: " + modAmount);
+        //Debug.Log("Incoming damage: " + modAmount);
         health = Mathf.Clamp(health - modAmount, 0, maxHealth);
         if(health <= 0)
         {
@@ -92,21 +92,21 @@ public abstract class Character : MonoBehaviour
                 onDeath();
             }
         }
-        Debug.Log("New Health: " + this.health);
+        //Debug.Log("New Health: " + this.health);
     }
 
     public void getHealed(int amount)
     {
         health = Mathf.Clamp(health + amount, 0, maxHealth);
-        Debug.Log("Incoming healing: " + amount);
-        Debug.Log("New Health: " + this.health);
+        //Debug.Log("Incoming healing: " + amount);
+        //Debug.Log("New Health: " + this.health);
     }
 
     public abstract void atDeathsDoor();
 
     public void onDeath()
     {
-        Debug.Log(this + " died");
+        //Debug.Log(this + " died");
         alive = false;
         onDeathUnique();
         if (!isFocused)

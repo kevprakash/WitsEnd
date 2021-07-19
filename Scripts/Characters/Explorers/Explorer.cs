@@ -4,6 +4,7 @@ using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 
 public abstract class Explorer : Character
 {
@@ -230,7 +231,7 @@ public abstract class Explorer : Character
             List<(List<int>, int)>[] abilityMemory = memory[i];
             for(int j = 0; j < abilityTrees.Length; j++)
             {
-                if(abilityMemory[j].Count < 1)
+                if(abilityMemory[j].Count <= 1)
                 {
                     continue;
                 }
@@ -239,6 +240,21 @@ public abstract class Explorer : Character
                 Vector<double> labelVector = CreateVector.Dense<double>(abilityMemory[j].Select(a => (double)a.Item2).ToArray());
                 await abilityTrees[j].build(memoryMatrix, labelVector, maxDepth: (level + 1) * 10);
             }
+        }
+        Debug.Log("Finished training");
+    }
+
+    public async Task train(int abilityIndex, int targetIndex)
+    {
+        Debug.Log("Began training for ability " + (abilityIndex + 1) + " for target " + targetIndex);
+        DecisionTree dTree = decisionTrees[abilityIndex][targetIndex];
+        List<(List<int>, int)> dMem = memory[abilityIndex][targetIndex];
+        if (dMem.Count > 1)
+        {
+            double[][] memoryArray = dMem.Select(a => a.Item1.Select(b => (double)b).ToArray()).ToArray();
+            Matrix<double> memoryMatrix = CreateMatrix.DenseOfRowArrays<double>(memoryArray);
+            Vector<double> labelVector = CreateVector.Dense<double>(dMem.Select(a => (double)a.Item2).ToArray());
+            await dTree.build(memoryMatrix, labelVector, maxDepth: (level + 1) * 10);
         }
         Debug.Log("Finished training");
     }
@@ -275,6 +291,82 @@ public abstract class Explorer : Character
             }
         }
         return targets;
+    }
+
+    public string getFilePath()
+    {
+        string path = Application.persistentDataPath + "/Data/DecisionTrees/" + name + ".csv";
+        if (!File.Exists(path))
+        {
+            File.Create(path);
+        }
+        return path;
+    }
+
+    public void writeToCSV()
+    {
+        File.WriteAllText(getFilePath(), string.Empty);
+        int treeIndex = 0;
+        for(int i = 0; i < decisionTrees.Length; i++)
+        {
+            for(int j = 0; j < decisionTrees[i].Length; j++)
+            {
+                writeMemoryMatrix(memory[i][j]);
+                treeIndex++;
+            }
+        }
+    }
+
+
+    public void writeMemoryMatrix(List<(List<int>, int)> memMat)
+    {
+        string path = getFilePath();
+        StreamWriter writer = new StreamWriter(path, true);
+        string memLine = "";
+        foreach((List<int>, int) mem in memMat)
+        {
+            foreach(int i in mem.Item1)
+            {
+                memLine += i + ",";
+            }
+            memLine += mem.Item2;
+
+            writer.WriteLine(memLine);
+        }
+        writer.WriteLine("----------");
+
+    }
+
+    public void readFromCSV()
+    {
+        string path = getFilePath();
+        StreamReader reader = new StreamReader(path);
+        string line = "";
+        int abilityIndex = 0;
+        int positionIndex = 0;
+        while((line = reader.ReadLine()) != null)
+        {
+            if(line == "----------")
+            {
+                positionIndex++;
+                if(positionIndex >= decisionTrees[abilityIndex].Length)
+                {
+                    positionIndex = 0;
+                    abilityIndex++;
+                }
+            }
+            else
+            {
+                string[] lineSplit = line.Split(',');
+                List<(List<int>, int)> memMat = memory[abilityIndex][positionIndex];
+                List<int> inMem = new List<int>();
+                for(int i = 0; i < lineSplit.Length - 1; i++)
+                {
+                    inMem.Add(int.Parse(lineSplit[i]));
+                }
+                memMat.Add((inMem, int.Parse(lineSplit[lineSplit.Length - 1])));
+            }
+        }
     }
 }
 

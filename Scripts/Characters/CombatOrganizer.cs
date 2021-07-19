@@ -147,8 +147,8 @@ public class CombatOrganizer : MonoBehaviour
         ((int, int), List<int>) lm = e.lastMemory;
         e.memory[lm.Item1.Item1][lm.Item1.Item2].Add((lm.Item2, judgement));
         animator.SetTrigger("close");
-        await e.train();
-        //await Task.Delay(TimeSpan.FromMilliseconds(500));
+        await e.train(lm.Item1.Item1, lm.Item1.Item2);
+        await Task.Delay(TimeSpan.FromMilliseconds(500));
         endTurn();
     }
 

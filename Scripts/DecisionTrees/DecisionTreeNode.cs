@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 public class DecisionTreeNode
 {
     public int index;
+    private int index2 = -1;
     private int value;
     private bool lessThan;
     private DecisionTreeNode left = null;   // True node
@@ -18,15 +19,37 @@ public class DecisionTreeNode
         this.lessThan = lessThan;
     }
 
+    public DecisionTreeNode(int index, int index2, int value, bool lessThan)
+    {
+        this.index = index;
+        this.index2 = index2;
+        this.value = value;
+        this.lessThan = lessThan;
+    }
+
     public bool evaluate(int[] row)
     {
-        if (lessThan)
+        if (index2 < 0)
         {
-            return row[index] < value;
+            if (lessThan)
+            {
+                return row[index] <= value;
+            }
+            else
+            {
+                return row[index] >= value;
+            }
         }
         else
         {
-            return row[index] > value;
+            if (lessThan)
+            {
+                return row[index] <= row[index2];
+            }
+            else
+            {
+                return row[index] >= row[index2];
+            }
         }
     }
 
@@ -59,13 +82,27 @@ public class DecisionTreeNode
 
     public bool[] batchEvaluate(Matrix<double> data)
     {
-        double[] column = data.Column(index).AsArray();
-        bool[] evals = new bool[column.Length];
-        for(int i = 0; i < evals.Length; i++)
+        if (index2 < 0)
         {
-            evals[i] = (lessThan && column[i] < value) || (!lessThan && column[i] > value);
+            double[] column = data.Column(index).AsArray();
+            bool[] evals = new bool[column.Length];
+            for (int i = 0; i < evals.Length; i++)
+            {
+                evals[i] = (lessThan && column[i] < value) || (!lessThan && column[i] > value);
+            }
+            return evals;
         }
-        return evals;
+        else
+        {
+            double[] column1 = data.Column(index).AsArray();
+            double[] column2 = data.Column(index).AsArray();
+            bool[] evals = new bool[column1.Length];
+            for(int i = 0; i < evals.Length; i++)
+            {
+                evals[i] = (lessThan && column1[i] <= column2[i]) || (!lessThan && column1[i] >= column2[i]);
+            }
+            return evals;
+        }
     }
 
     public bool hasChildren()
@@ -100,6 +137,14 @@ public class DecisionTreeNode
 
     public override string ToString()
     {
-        return "Column " + index + (lessThan ? " < " : " > ") + value;
+        if (index2 < 0)
+        {
+            return "Column " + index + (lessThan ? " <= " : " >= ") + value;
+
+        }
+        else
+        {
+            return "Column " + index + (lessThan ? " >= " : " >= ") + "Column " + index2;
+        }
     }
 }

@@ -13,19 +13,21 @@ public class Valkyrie : Explorer
     //Righteous Swing
     public override void ability1(Character[] targets)
     {
-        Debug.Log("Righteous swing at " + targets[0]);
-        combatPrint("Righteous swing at " + targets[0]);
+        //Debug.Log("Righteous swing at " + targets[0]);
+        //combatPrint("Righteous swing at " + targets[0]);
         Character c = targets[0];
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         c.getParty().focus(new int[] { c.getParty().getPositionOfCharacter(c) });
         if (c.isHit(100 + this.accuracy))
         {
             bool crit = isCrit();
-            c.takeDamage((int)(crit ? 60 : 40) * (1 + (this.damage / 100)));
+            c.takeDamage((int)((crit ? 60 : 40) * (1 + (this.damage / 100))));
+            combatPrint(this + " swung her sword at " + targets[0] + " dealing " + (int)((crit ? 60 : 40) * (1 + (this.damage / 100))) + " damage");
         }
         else
         {
-            Debug.Log("Missed");
+            //Debug.Log("Missed");
+            combatPrint(this + " missed her swing at " + targets[0]);
         }
     }
 
@@ -35,8 +37,8 @@ public class Valkyrie : Explorer
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         if (!isDivine())
         {
-            Debug.Log("Becoming Divine");
-            combatPrint("Becoming Divine");
+            //Debug.Log("Becoming Divine");
+            combatPrint(this + " became divine, buffing her stats and terrorizing her party");
             addStatusEffect("dmg", 50 + this.auxiliary, 10000);
             addStatusEffect("dodge", 20 + this.auxiliary/4, 10000);
             addStatusEffect("crit", 10 + this.auxiliary/4, 10000);
@@ -53,8 +55,8 @@ public class Valkyrie : Explorer
         }
         else
         {
-            Debug.Log("Return to Mortality");
-            combatPrint("Return to Mortality");
+            //Debug.Log("Return to Mortality");
+            combatPrint(this + " returned to mortality, weakening herself");
             removeStatusEffect("dmg");
             removeStatusEffect("dodge");
             removeStatusEffect("crit");
@@ -76,8 +78,8 @@ public class Valkyrie : Explorer
     //Lead the Charge
     public override void ability3(Character[] targets)
     {
-        Debug.Log("Leading the charge at " + targets[0]);
-        combatPrint("Leading the charge at " + targets[0]);
+        //Debug.Log("Leading the charge at " + targets[0]);
+        //combatPrint("Leading the charge at " + targets[0]);
         Character c = targets[0];
         move(-1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
@@ -85,23 +87,29 @@ public class Valkyrie : Explorer
         if (c.isHit(100 + this.accuracy))
         {
             bool crit = isCrit();
-            c.takeDamage((int)(crit ? 30 : 20) * (1 + (this.damage / 100)));
+            c.takeDamage((int)((crit ? 30 : 20) * (1 + (this.damage / 100))));
             if (isDivine())
             {
                 c.addStatusEffect("stun", 1, crit ? 2 : 1);
+                combatPrint(this + " charged at " + targets[0] + " dealing " + (int)((crit ? 30 : 20) * (1 + (this.damage / 100))) + " damage and stunning");
+            }
+            else
+            {
+                combatPrint(this + " charged at " + targets[0] + " dealing " + (int)((crit ? 30 : 20) * (1 + (this.damage / 100))) + " damage");
             }
         }
         else
         {
-            Debug.Log("Missed");
+            //Debug.Log("Missed");
+            combatPrint(this + " missed her charge at " + targets[0]);
         }
     }
 
     //Smite
     public override void ability4(Character[] targets)
     {
-        Debug.Log("Smiting " + targets[0]);
-        combatPrint("Smiting " + targets[0]);
+        //Debug.Log("Smiting " + targets[0]);
+        //combatPrint("Smiting " + targets[0]);
         Character c = targets[0];
         move(1);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
@@ -109,28 +117,31 @@ public class Valkyrie : Explorer
         if (c.isHit(100 + this.accuracy))
         {
             bool crit = isCrit();
-            c.takeDamage((int)(crit ? 38 : 25) * (1 + (this.damage / 100)), ignoreProt: isDivine());
+            c.takeDamage((int)((crit ? 38 : 25) * (1 + (this.damage / 100))), ignoreProt: isDivine());
+            combatPrint(this + " smited " + targets[0] + " dealing " + (int)((crit ? 38 : 25) * (1 + (this.damage / 100))) + " damage");
         }
         else
         {
-            Debug.Log("Missed");
+            //Debug.Log("Missed");
+            combatPrint(this + " missed smiting " + targets[0]);
         }
     }
 
     //Pray
     public override void ability5(Character[] targets)
     {
-        Debug.Log("Praying");
-        combatPrint("Praying");
+        //Debug.Log("Praying");
+        //combatPrint("Praying");
         this.party.focus(new int[] { 0, 1, 2, 3 });
         foreach (Character c in targets)
         {
             if (c != null)
             {
                 Explorer e = (Explorer)c;
-                e.modifySanity(5 + this.auxiliary);
+                e.modifySanity(10 + this.auxiliary);
             }
         }
+        combatPrint("Prayed, restoring  " + (10 + this.auxiliary) + " sanity to her party");
     }
 
     public override int[] calculateStats()

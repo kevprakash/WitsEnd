@@ -10,18 +10,18 @@ public class Party : MonoBehaviour
     public Character[] defaultOrder = null;
     public Vector3[] targetLocations = new Vector3[]
     {
-        new Vector3(-1.5f, -2, 0),
-        new Vector3(-3.35f, -2, 0),
-        new Vector3(-5.2f, -2, 0),
-        new Vector3(-7.05f, -2, 0)
+        new Vector3(-1.5f, -0.6f, 0),
+        new Vector3(-3.35f, -0.6f, 0),
+        new Vector3(-5.2f, -0.6f, 0),
+        new Vector3(-7.05f, -0.6f, 0)
     };
     public float movementSpeed = 10f;
     public Vector3[] focusLocations = new Vector3[]
     {
-        new Vector3(-1.5f, -3, -1),
-        new Vector3(-3.6f, -3, -1),
-        new Vector3(-5.7f, -3, -1),
-        new Vector3(-8.05f, -3, -1)
+        new Vector3(-1.5f, -1.25f, -1),
+        new Vector3(-3.6f, -1.25f, -1),
+        new Vector3(-5.7f, -1.25f, -1),
+        new Vector3(-8.05f, -1.25f, -1)
     };
     public Vector3 defaultScale = new Vector3(1, 1, 1);
     public Vector3 focusScale = new Vector3(1.5f, 1.5f, 1.5f);

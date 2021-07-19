@@ -11,7 +11,7 @@ public class DecisionTree
 
     private DecisionTreeNode root = null;
 
-    public async Task build(Matrix<double> data, Vector<double> labels, int maxDepth, double impurityThreshold=0, double sampleMinLength=5)
+    public async Task build(Matrix<double> data, Vector<double> labels, int maxDepth, double impurityThreshold=0, double sampleMinLength=1, float minRatio=0.0f)
     {
         List < List < (DecisionTreeNode, (Matrix<double>, Vector<double>))>> levels = new List<List<(DecisionTreeNode, (Matrix<double>, Vector<double>))>>();
         levels.Add(new List<(DecisionTreeNode, (Matrix<double>, Vector<double>))>());
@@ -28,7 +28,7 @@ public class DecisionTree
                 DecisionTreeNode n = ndl.Item1;
                 Matrix<double> d = ndl.Item2.Item1;
                 Vector<double> l = ndl.Item2.Item2;
-                if(GINIImpurity(l.ToList<double>()) > impurityThreshold)
+                if(l.Count > sampleMinLength && GINIImpurity(l.ToList<double>()) > impurityThreshold)
                 {
                     bool[] evalualtions = n.batchEvaluate(d);
                     double[][] rows = d.ToRowArrays();
@@ -54,20 +54,20 @@ public class DecisionTree
                             dr_i++;
                         }
                     }
-                    if(GINIImpurity(new List<double>(dll)) > impurityThreshold && dll.Length > sampleMinLength)
+                    if(dll.Length > sampleMinLength && GINIImpurity(new List<double>(dll)) > impurityThreshold)
                     {
                         Matrix<double> dlm = CreateMatrix.DenseOfRowArrays<double>(d_l);
                         Vector<double> dlv = CreateVector.Dense<double>(dll);
-                        DecisionTreeNode leftNode = await makeNode(dlm, dlv);
+                        DecisionTreeNode leftNode = await makeNode(dlm, dlv, minRatio:minRatio);
                         levels[lev].Add((leftNode, (dlm, dlv)));
                         n.setChildNode(leftNode, true);
                         totalNodes++;
                     }
-                    if (GINIImpurity(new List<double>(drl)) > impurityThreshold && drl.Length > sampleMinLength)
+                    if (drl.Length > sampleMinLength && GINIImpurity(new List<double>(drl)) > impurityThreshold)
                     {
                         Matrix<double> drm = CreateMatrix.DenseOfRowArrays<double>(d_r);
                         Vector<double> drv = CreateVector.Dense<double>(drl);
-                        DecisionTreeNode rightNode = await makeNode(drm, drv);
+                        DecisionTreeNode rightNode = await makeNode(drm, drv, minRatio:minRatio);
                         levels[lev].Add((rightNode, (drm, drv)));
                         n.setChildNode(rightNode, false);
                         totalNodes++;
@@ -83,14 +83,17 @@ public class DecisionTree
         //root.debugPrint();
     }
 
-    public static async Task<DecisionTreeNode> makeNode(Matrix<double> data, Vector<double> labels, int asyncCount=5)
+    public static async Task<DecisionTreeNode> makeNode(Matrix<double> data, Vector<double> labels, int asyncCount=100, float minRatio=0.125f)
     {
         int columnCount = data.ColumnCount;
         DecisionTreeNode bestNode = null;
         double bestScore = float.MaxValue;
-        for(int c = 0; c < columnCount; c++)
+        (DecisionTreeNode, double) bestComparisons = await calculateBestComparison(data, labels, minRatio);
+        bestNode = bestComparisons.Item1;
+        bestScore = bestComparisons.Item2;
+        for(int c = 0; c < columnCount && bestScore > 0; c++)
         {
-            (DecisionTreeNode, double) bestSplit = calculateBestSplit(data, labels, c);
+            (DecisionTreeNode, double) bestSplit = calculateBestSplit(data, labels, c, minRatio);
             DecisionTreeNode testNode = bestSplit.Item1;
             double testScore = bestSplit.Item2;
             if(testScore < bestScore)
@@ -187,13 +190,71 @@ public class DecisionTree
         double onesRatio = (onesCount + 0.0) / dataLength;
         double zeroesRatio = (zeroesCount + 0.0) / dataLength;
         double gini = onesRatio * (1 - onesRatio) + zeroesRatio * (1 - zeroesRatio);
-        //Debug.Log("Gini Impurity: " + gini);
+        Debug.Log("Gini Impurity: " + gini);
         return gini;
     }
 
     public DecisionTreeNode getRoot()
     {
         return root;
+    }
+
+    public static async Task<(DecisionTreeNode, double)> calculateBestComparison(Matrix<double> data, Vector<double> labels, float minRatio = 0.125f, int asyncCount=10)
+    {
+        DecisionTreeNode bestNode = null;
+        double bestScore = double.MaxValue;
+        for(int index1 = 0; index1 < data.ColumnCount; index1++)
+        {
+            for (int index2 = 0; index2 < data.ColumnCount; index2++)
+            {
+                if (index1 == index2)
+                {
+                    continue;
+                }
+                DecisionTreeNode testNode = new DecisionTreeNode(index1, index2, 0, false);
+                bool[] evaluation = testNode.batchEvaluate(data);
+                List<double> evalTrue = new List<double>();
+                List<double> evalFalse = new List<double>();
+                for (int i = 0; i < evaluation.Length; i++)
+                {
+                    if (evaluation[i])
+                    {
+                        evalTrue.Add(labels[i]);
+                    }
+                    else
+                    {
+                        evalFalse.Add(labels[i]);
+                    }
+                }
+                if (evalTrue.Count >= evaluation.Length * minRatio && evalFalse.Count >= evaluation.Length * minRatio)
+                {
+                    double scoreTrue = score(evalTrue, 1);
+                    double scoreFalse = score(evalFalse, 0);
+                    double scoreBoth = scoreTrue + scoreFalse;
+                    if (scoreBoth < bestScore)
+                    {
+                        bestNode = testNode;
+                        bestScore = scoreBoth;
+
+
+                        if (bestScore <= 0.0)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+            }
+            if (bestScore <= 0.0)
+            {
+                break;
+            }
+            if((index1 + 1) % asyncCount == 0)
+            {
+                await waitNextFrame();
+            }
+        }
+        return (bestNode, bestScore);
     }
 
     public bool evaluate(int[] row)

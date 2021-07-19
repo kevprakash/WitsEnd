@@ -50,16 +50,16 @@ MonoBehaviour:
   - {fileID: 0}
   defaultOrder: []
   targetLocations:
-  - {x: 1.5, y: -2, z: 0}
-  - {x: 3.35, y: -2, z: 0}
-  - {x: 5.2, y: -2, z: 0}
-  - {x: 7.05, y: -2, z: 0}
+  - {x: 1.5, y: -0.6, z: 0}
+  - {x: 3.35, y: -0.6, z: 0}
+  - {x: 5.2, y: -0.6, z: 0}
+  - {x: 7.05, y: -0.6, z: 0}
   movementSpeed: 10
   focusLocations:
-  - {x: 1.5, y: -3, z: -1}
-  - {x: 3.6, y: -3, z: -1}
-  - {x: 5.7, y: -3, z: -1}
-  - {x: 8.05, y: -3, z: -1}
+  - {x: 1.5, y: -1.25, z: -1}
+  - {x: 3.6, y: -1.25, z: -1}
+  - {x: 5.7, y: -1.25, z: -1}
+  - {x: 8.05, y: -1.25, z: -1}
   defaultScale: {x: 1, y: 1, z: 1}
   focusScale: {x: 1.5, y: 1.5, z: 1.5}
   zoomSpeed: 10
@@ -70,4 +70,4 @@ MonoBehaviour:
   dualTest: 0
   defaultTest: 0
   ownedByPlayer: 0
-  flipSprites: 1
+  flipSprites: 0

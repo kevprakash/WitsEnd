@@ -57,17 +57,19 @@ public class Slug : Enemy
     public void spit(Character target)
     {
         Debug.Log("Spitting at " + target);
-        combatPrint("Spitting at " + target);
+        //combatPrint("Spitting at " + target);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         target.getParty().focus(new int[] { target.getParty().getPositionOfCharacter(target) });
         if(target.isHit(60 + this.accuracy))
         {
             bool crit = isCrit();
-            target.takeDamage((int)(crit ? 23 : 15) * (1 + (this.damage / 100)));
+            target.takeDamage((int)((crit ? 23 : 15) * (1 + (this.damage / 100))));
+            combatPrint(this + " spit at " + target + " dealing " + (int)((crit ? 23 : 15) * (1 + (this.damage / 100))) + " damage");
         }
         else
         {
             Debug.Log("Missed");
+            combatPrint(this + " spit at " + target + " but missed");
         }
         targetSprite = abilitySprites[0];
     }
@@ -75,17 +77,19 @@ public class Slug : Enemy
     public void lunge(Character target)
     {
         Debug.Log("Lunging at " + target);
-        combatPrint("Lunging at " + target);
+        //combatPrint("Lunging at " + target);
         this.party.focus(new int[] { party.getPositionOfCharacter(this) });
         target.getParty().focus(new int[] { target.getParty().getPositionOfCharacter(target) });
         if (target.isHit(80 + this.accuracy))
         {
             bool crit = isCrit();
-            target.takeDamage((int)(crit ? 15 : 10) * (1 + (this.damage / 100)));
+            target.takeDamage((int)((crit ? 15 : 10) * (1 + (this.damage / 100))));
+            combatPrint(this + " lunged at " + target + " dealing " + (int)((crit ? 15 : 10) * (1 + (this.damage / 100))) + " damage");
         }
         else
         {
             Debug.Log("Missed");
+            combatPrint(this + " lunged at " + target + " but missed");
         }
         targetSprite = abilitySprites[1];
     }

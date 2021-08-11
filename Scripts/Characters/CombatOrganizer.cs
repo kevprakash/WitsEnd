@@ -12,7 +12,8 @@ public class CombatOrganizer : MonoBehaviour
     public Character[] turnOrder;
     public int turnIndex = 0;
     public MovementControl moveControl;
-    public Animator animator;
+    //public Animator animator;
+    public PopupSystem popupSystem;
     public string combatString = "";
 
     public bool turn = false;
@@ -131,24 +132,27 @@ public class CombatOrganizer : MonoBehaviour
         }
     }
 
-    public void approveAction()
+    public async void approveAction()
     {
-        judgeAction(1);
+        await judgeAction(1);
     }
 
-    public void disapproveAction()
+    public async void disapproveAction()
     {
-        judgeAction(0);
+        await judgeAction(0);
     }
 
-    public async void judgeAction(int judgement)
+    public async Task judgeAction(int judgement)
     {
         Explorer e = (Explorer)turnOrder[turnIndex];
         ((int, int), List<int>) lm = e.lastMemory;
         e.memory[lm.Item1.Item1][lm.Item1.Item2].Add((lm.Item2, judgement));
-        animator.SetTrigger("close");
+        //animator.SetTrigger("close");
+        await popupSystem.close();
         await e.train(lm.Item1.Item1, lm.Item1.Item2);
+        Debug.Log("Started Waiting");
         await Task.Delay(TimeSpan.FromMilliseconds(500));
+        Debug.Log("Finished Waiting");
         endTurn();
     }
 

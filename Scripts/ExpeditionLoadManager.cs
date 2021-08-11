@@ -14,7 +14,9 @@ public class ExpeditionLoadManager : MonoBehaviour
     async void Start()
     {
         moveControl.canMove = false;
-        await backgroundLoader.createBackground(20);
+        StaticInformationHolder.readRoster();
+        StaticInformationHolder.readParty();
+        await backgroundLoader.createBackground(StaticInformationHolder.expeditionLength);
     }
 
     // Update is called once per frame
@@ -26,8 +28,10 @@ public class ExpeditionLoadManager : MonoBehaviour
                 case 0:
                     if (backgroundLoader.created)
                     {
-                        StaticInformationHolder.createPartyGameObject();
-                        loadingState++;
+                        if(!StaticInformationHolder.createdParty && !StaticInformationHolder.creatingParty)
+                            StaticInformationHolder.createPartyGameObject();
+                        if(StaticInformationHolder.createdParty)
+                            loadingState++;
                     }
                     break;
                 case 1:

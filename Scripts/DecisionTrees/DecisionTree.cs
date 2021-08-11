@@ -28,7 +28,7 @@ public class DecisionTree
                 DecisionTreeNode n = ndl.Item1;
                 Matrix<double> d = ndl.Item2.Item1;
                 Vector<double> l = ndl.Item2.Item2;
-                if(l.Count > sampleMinLength && GINIImpurity(l.ToList<double>()) > impurityThreshold)
+                if(l.Count > sampleMinLength && GINIImpurity(l.ToList<double>()) > impurityThreshold && n != null)
                 {
                     bool[] evalualtions = n.batchEvaluate(d);
                     double[][] rows = d.ToRowArrays();

@@ -5,6 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using System;
 
 public abstract class Explorer : Character
 {
@@ -16,8 +17,6 @@ public abstract class Explorer : Character
     public DecisionTree[][] decisionTrees;
     public List<(List<int>, int)>[][] memory;
 
-    public bool trainTest = false;
-
     public ((int, int), List<int>) lastMemory;
 
     static Explorer()
@@ -27,15 +26,6 @@ public abstract class Explorer : Character
         for (int i = 0; i < charNames.Length; i++)
         {
             nameToInt.Add(charNames[i], i % 2);
-        }
-    }
-
-    public void Update()
-    {
-        if (trainTest)
-        {
-            trainTest = false;
-            train();
         }
     }
 
@@ -83,7 +73,9 @@ public abstract class Explorer : Character
 
     public override void onDeathUnique()
     {
-
+        string path = getFilePath();
+        StaticInformationHolder.dismiss(name);
+        File.Delete(path);
     }
 
     public static int[] characteristicsNameToInt(string[] cnames)
@@ -191,7 +183,7 @@ public abstract class Explorer : Character
         }
 
         bool hasCandidates = candidates.Count > 0;
-        int index = Random.Range(0, hasCandidates ? candidates.Count : fails.Count);
+        int index = UnityEngine.Random.Range(0, hasCandidates ? candidates.Count : fails.Count);
         while(isNullTargets((hasCandidates ? candidates[index] : fails[index]).Item2)){
             if (hasCandidates)
             {
@@ -206,7 +198,7 @@ public abstract class Explorer : Character
                     moveTowardsDefault();
                 }
             }
-            index = Random.Range(0, hasCandidates ? candidates.Count : fails.Count);
+            index = UnityEngine.Random.Range(0, hasCandidates ? candidates.Count : fails.Count);
         }
         ((int, int), Character[]) info = hasCandidates ? candidates[index] : fails[index];
         //Debug.Log(info);
@@ -298,12 +290,16 @@ public abstract class Explorer : Character
         string path = Application.persistentDataPath + "/Data/DecisionTrees/" + name + ".csv";
         if (!File.Exists(path))
         {
-            File.Create(path);
+            if(!Directory.Exists(Application.persistentDataPath + "/Data/DecisionTrees/"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/Data/DecisionTrees/");
+            }
+            File.Create(path).Dispose();
         }
         return path;
     }
 
-    public void writeToCSV()
+    public async Task writeToCSV()
     {
         File.WriteAllText(getFilePath(), string.Empty);
         int treeIndex = 0;
@@ -311,18 +307,19 @@ public abstract class Explorer : Character
         {
             for(int j = 0; j < decisionTrees[i].Length; j++)
             {
-                writeMemoryMatrix(memory[i][j]);
+                await writeMemoryMatrix(memory[i][j]);
                 treeIndex++;
             }
         }
     }
 
 
-    public void writeMemoryMatrix(List<(List<int>, int)> memMat)
+    public async Task writeMemoryMatrix(List<(List<int>, int)> memMat)
     {
         string path = getFilePath();
         StreamWriter writer = new StreamWriter(path, true);
         string memLine = "";
+        int index = 0;
         foreach((List<int>, int) mem in memMat)
         {
             foreach(int i in mem.Item1)
@@ -332,14 +329,21 @@ public abstract class Explorer : Character
             memLine += mem.Item2;
 
             writer.WriteLine(memLine);
+            index++;
+            if(index % 100 == 0)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(1));
+            }
         }
         writer.WriteLine("----------");
+        writer.Close();
 
     }
 
-    public void readFromCSV()
+    public async Task readFromCSV()
     {
         string path = getFilePath();
+        await Task.Delay(TimeSpan.FromMilliseconds(1));
         StreamReader reader = new StreamReader(path);
         string line = "";
         int abilityIndex = 0;
@@ -354,6 +358,7 @@ public abstract class Explorer : Character
                     positionIndex = 0;
                     abilityIndex++;
                 }
+                await Task.Delay(TimeSpan.FromMilliseconds(1));
             }
             else
             {
@@ -367,6 +372,7 @@ public abstract class Explorer : Character
                 memMat.Add((inMem, int.Parse(lineSplit[lineSplit.Length - 1])));
             }
         }
+        reader.Close();
     }
 }
 
